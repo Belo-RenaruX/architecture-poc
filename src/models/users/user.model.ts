@@ -1,5 +1,5 @@
 import dayjs from "dayjs";
-import { UserDTO, UserDTOSchema } from "../../dtos/users/user.dto";
+import { UserDTO, UserDTOSchema } from "../../dtos/users/user.dto.ts";
 
 export class UserModel {
   readonly id: number;

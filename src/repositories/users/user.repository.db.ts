@@ -1,5 +1,5 @@
 import { IUserRepository } from './user.repository.interface';
-import { Database } from '../../clients/mysql'
+import { Database } from '../../clients/mysql.client'
 import { UserDTO, UserInsertDTO, UserUpdateDTO } from '../../dtos/users/user.dto';
 import { TransactionUserModel } from '../../models/users/transactionUser.model';
 import {

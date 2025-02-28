@@ -3,8 +3,8 @@ import {
   UserInsertDTO,
   UserTransactionDTO,
   UserUpdateDTO,
-} from "../../dtos/users/user.dto";
-import { IEncryptionManager } from "../../managers/encryption.manager";
+} from "../../dtos/users/user.dto.ts";
+import { IEncryptionManager } from "../../managers/encryption.manager.ts";
 
 export class TransactionUserModel<T extends UserInsertDTO | UserUpdateDTO> {
   readonly firstName?: string | null;

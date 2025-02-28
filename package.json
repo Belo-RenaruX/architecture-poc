@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "Fastify backend architecture PoC",
   "scripts": {
-    "dev": "nodemon --ext ts --exec ts-node ./src/server.ts"
+    "dev": "nodemon --exec node --loader ts-node/esm ./src/server.ts"
   },
   "author": "Renato Berrocal <renato.berrocal@buffrlabs.com>",
   "license": "ISC",

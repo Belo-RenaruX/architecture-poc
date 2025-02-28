@@ -1,5 +1,5 @@
 import { FastifyInstance, FastifyReply, FastifyRequest } from 'fastify';
-import { UserBuilder } from '../builders/user.builder';
+import { UserBuilder } from '../builders/user.builder.ts';
 import { UserInsertDTO, UserUpdateDTO } from '../dtos/users/user.dto';
 
 export class UserRoutes {

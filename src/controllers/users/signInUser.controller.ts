@@ -1,6 +1,6 @@
 import { FastifyReply } from "fastify";
 import { IUserInteractor } from "../../interactors/users/user.interactor.interface";
-import { ResponseModel } from "../../models/response/response.model";
+import { ResponseModel } from "../../models/response/response.model.ts";
 import { IUserController } from "./user.controller.interface";
 
 export class SignInUserController implements IUserController {

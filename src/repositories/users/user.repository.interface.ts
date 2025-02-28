@@ -1,6 +1,6 @@
 import { DeleteResult, InsertResult, UpdateResult } from "kysely";
-import { UserDTO, UserInsertDTO, UserUpdateDTO } from "../../dtos/users/user.dto";
-import { TransactionUserModel } from "../../models/users/transactionUser.model";
+import { UserDTO, UserInsertDTO, UserUpdateDTO } from "../../dtos/users/user.dto.ts";
+import { TransactionUserModel } from "../../models/users/transactionUser.model.ts";
 
 export interface IUserRepository {
   findUserById(id:number): Promise<UserDTO | undefined>;

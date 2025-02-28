@@ -1,4 +1,4 @@
-import { ErrorModel } from "../errors/error.model";
+import { ErrorModel } from "../errors/error.model.ts";
 
 type ErrorResponse = {
   statusCode: number;

@@ -1,4 +1,4 @@
-import { ErrorModel } from "../../models/errors/error.model";
+import { ErrorModel } from "../../models/errors/error.model.ts";
 import { IUserRepository } from "../../repositories/users/user.repository.interface";
 import { IUserInteractor } from "./user.interactor.interface";
 

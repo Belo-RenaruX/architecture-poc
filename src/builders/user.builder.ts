@@ -1,30 +1,34 @@
-import { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
-import { db } from "../clients/mysql";
-import { FindUserController } from "../controllers/users/findUser.controller";
-import { FindUserInteractor } from "../interactors/users/findUser.interactor.ts";
-import { UserRepository } from "../repositories/users/user.repository.db";
-import { GetAllUsersInteractor } from "../interactors/users/getAllUsers.interactor";
-import {GetAllUsersController } from "../controllers/users/getAllUsers.controller";
-import { SignInUserController } from "../controllers/users/signInUser.controller";
-import { SignInUserInteractor } from "../interactors/users/signInUser.interactor";
-import { EncryptionConfigSha512 } from "../config/encryption.config";
-import { EncryptionManager } from "../managers/encryption.manager";
-import { JWTManager } from "../managers/jwt.manager";
+import {
+  FastifyInstance,
+  FastifyReply,
+  FastifyRequest
+} from "fastify";
 import {
   UserInsertDTO,
   UserInsertDTOSchema,
   UserSessionDTO,
   UserUpdateDTO,
   UserUpdateDTOSchema
-} from "../dtos/users/user.dto";
-import { CreateUserInteractor } from "../interactors/users/createUser.interactor";
-import { CreateUserController } from "../controllers/users/createUser.controller";
-import { CreateBulkUserInteractor } from "../interactors/users/createBulkUser.interactor";
-import { CreateBulkUserController } from "../controllers/users/createBulkUser.controller";
-import { UpdateUserInteractor } from "../interactors/users/updateUser.interactor";
-import { UpdateUserController } from "../controllers/users/updateUser.controller";
-import { DeleteUserController } from "../controllers/users/deleteUser.controller";
-import { DeleteUserInteractor } from "../interactors/users/deleteUser.interactor";
+} from "../dtos/users/user.dto.ts";
+import { db } from "../clients/mysql.client.ts";
+import { UserRepository } from "../repositories/users/user.repository.db.ts";
+import { EncryptionConfigSha512 } from "../config/encryption.config.ts";
+import { EncryptionManager } from "../managers/encryption.manager.ts";
+import { JWTManager } from "../managers/jwt.manager.ts";
+import { FindUserController } from "../controllers/users/findUser.controller.ts";
+import { FindUserInteractor } from "../interactors/users/findUser.interactor.ts";
+import { GetAllUsersInteractor } from "../interactors/users/getAllUsers.interactor.ts";
+import { GetAllUsersController } from "../controllers/users/getAllUsers.controller.ts";
+import { SignInUserController } from "../controllers/users/signInUser.controller.ts";
+import { SignInUserInteractor } from "../interactors/users/signInUser.interactor.ts";
+import { CreateUserInteractor } from "../interactors/users/createUser.interactor.ts";
+import { CreateUserController } from "../controllers/users/createUser.controller.ts";
+import { CreateBulkUserInteractor } from "../interactors/users/createBulkUser.interactor.ts";
+import { CreateBulkUserController } from "../controllers/users/createBulkUser.controller.ts";
+import { UpdateUserInteractor } from "../interactors/users/updateUser.interactor.ts";
+import { UpdateUserController } from "../controllers/users/updateUser.controller.ts";
+import { DeleteUserController } from "../controllers/users/deleteUser.controller.ts";
+import { DeleteUserInteractor } from "../interactors/users/deleteUser.interactor.ts";
 
 export class UserBuilder {
   static buildFindUsers = (

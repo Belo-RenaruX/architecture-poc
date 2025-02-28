@@ -1,6 +1,6 @@
-import { UserSessionDTO } from "../../dtos/users/user.dto";
-import { UserModel } from "./user.model";
-import { IJWTManager } from "../../managers/jwt.manager";
+import { UserSessionDTO } from "../../dtos/users/user.dto.ts";
+import { UserModel } from "./user.model.ts";
+import { IJWTManager } from "../../managers/jwt.manager.ts";
 
 export class UserSignInModel {
   readonly token: string;

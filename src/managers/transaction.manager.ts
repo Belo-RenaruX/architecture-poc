@@ -1,5 +1,5 @@
 import { Kysely, Transaction, TransactionBuilder } from "kysely";
-import { Database } from "../clients/mysql";
+import { Database } from "../clients/mysql.client";
 
 export interface ITransactionManager {
   runTransaction<T>(callback: (trx: Transaction<Database>) => Promise<T>): Promise<T>;

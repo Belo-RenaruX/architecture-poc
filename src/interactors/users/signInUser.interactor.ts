@@ -1,9 +1,9 @@
-import { UserSessionDTO } from "../../dtos/users/user.dto";
-import { IEncryptionManager } from "../../managers/encryption.manager";
-import { IJWTManager } from "../../managers/jwt.manager";
-import { ErrorModel } from "../../models/errors/error.model";
-import { UserModel } from "../../models/users/user.model";
-import { UserSignInModel } from "../../models/users/userSignin.model";
+import { UserSessionDTO } from "../../dtos/users/user.dto.ts";
+import { IEncryptionManager } from "../../managers/encryption.manager.ts";
+import { IJWTManager } from "../../managers/jwt.manager.ts";
+import { ErrorModel } from "../../models/errors/error.model.ts";
+import { UserModel } from "../../models/users/user.model.ts";
+import { UserSignInModel } from "../../models/users/userSignin.model.ts";
 import { IUserRepository } from "../../repositories/users/user.repository.interface";
 import { IUserInteractor } from "./user.interactor.interface";
 
