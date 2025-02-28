@@ -1,0 +1,38 @@
+# Node modules
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# Logs
+logs
+*.log
+
+# dotenv environment variables file
+.env
+
+# Serverless directories
+.serverless/
+.serverless_plugins/
+
+# Coverage directory used by tools like istanbul
+coverage/
+nyc_output/
+
+# macOS
+.DS_Store
+
+# Windows
+Thumbs.db
+ehthumbs.db
+
+# AWS SAM
+.aws-sam
+
+# Local development environment settings
+.vscode/
+.idea/
+*.swp
+
+# Temporary files
+tmp/
+temp/
