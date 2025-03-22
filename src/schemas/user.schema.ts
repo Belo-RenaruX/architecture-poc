@@ -12,4 +12,4 @@ export const UserTableSchema = z.object({
   updatedAt: z.string().datetime(),
 });
 
-export type UserTable = z.infer<typeof UserTableSchema>
+export type UserTable = z.infer<typeof UserTableSchema>;

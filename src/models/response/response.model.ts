@@ -1,13 +1,13 @@
-import { ErrorModel } from "../errors/error.model.ts";
+import { ErrorModel } from '../errors/error.model.ts';
 
-type ErrorResponse = {
+interface ErrorResponse {
   statusCode: number;
   message: string;
-  error: string,
+  error: string;
   details: string[];
 }
 
-type SuccessResponse<T> = {
+interface SuccessResponse<T> {
   statusCode: number;
   message: string;
   data?: T;
@@ -15,10 +15,10 @@ type SuccessResponse<T> = {
 
 export class ResponseModel<T> {
   private readonly body: ErrorResponse | SuccessResponse<T>;
-  readonly statusCode: number;
+  public readonly statusCode: number;
 
-  constructor(private data?: T | ErrorModel) {
-    if(this.data instanceof ErrorModel) {
+  constructor(private readonly data?: T | ErrorModel) {
+    if (this.data instanceof ErrorModel) {
       this.statusCode = this.data.statusCode;
       this.body = {
         statusCode: this.data.statusCode,
@@ -27,32 +27,28 @@ export class ResponseModel<T> {
         details: this.data.details,
       };
       return;
-    };
-    if(!this.data) {
+    }
+    if (!this.data) {
       this.statusCode = 204;
       this.body = {
         statusCode: 204,
         message: 'No Content',
       };
-      return;
-    } 
-    else {
+    } else {
       this.statusCode = 200;
       this.body = {
         statusCode: 200,
         message: 'Success',
         data: this.data as T,
       };
-      return;
-    } 
+    }
   }
 
-  toPlainObject(): ErrorResponse | SuccessResponse<T> {
+  public toPlainObject = (): ErrorResponse | SuccessResponse<T> => {
     return this.data instanceof ErrorModel
       ? this.body
-      : Object.fromEntries(
-          Object.entries(this.body)
-            .filter(([_, value]) => value !== undefined)
-        ) as SuccessResponse<T>;
-  }
+      : (Object.fromEntries(
+          Object.entries(this.body).filter(([_, value]) => value !== undefined),
+        ) as SuccessResponse<T>);
+  };
 }

@@ -1,19 +1,19 @@
-import { FastifyReply } from "fastify";
-import { IUserInteractor } from "../../interactors/users/user.interactor.interface";
-import { ResponseModel } from "../../models/response/response.model.ts";
-import { IUserController } from "./user.controller.interface";
+import { FastifyReply } from 'fastify';
+
+import { IUserInteractor } from '../../interactors/users/user.interactor.interface.ts';
+import { ResponseModel } from '../../models/response/response.model.ts';
+
+import { IUserController } from './user.controller.interface.ts';
 
 export class CreateBulkUserController implements IUserController {
   constructor(
-    private interactor: IUserInteractor,
-    private reply: FastifyReply,
+    private readonly interactor: IUserInteractor,
+    private readonly reply: FastifyReply,
   ) {}
 
-  async handle(): Promise<void> {
+  public handle = async (): Promise<void> => {
     const result = await this.interactor.execute();
     const response = new ResponseModel(result);
-    this.reply
-      .code(response.statusCode)
-      .send(response.toPlainObject());
-  }
+    this.reply.code(response.statusCode).send(response.toPlainObject());
+  };
 }

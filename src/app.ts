@@ -1,8 +1,8 @@
-import Fastify, { FastifyInstance } from "fastify";
-import cors from "@fastify/cors";
-import fastifyJwt from "@fastify/jwt";
+import cors from '@fastify/cors';
+import fastifyJwt from '@fastify/jwt';
+import Fastify, { FastifyInstance } from 'fastify';
 
-import { UserRoutes } from "./routes/user.route.ts";
+import { UserRoutes } from './routes/user.route.ts';
 
 export const app: FastifyInstance = Fastify({ logger: true });
 

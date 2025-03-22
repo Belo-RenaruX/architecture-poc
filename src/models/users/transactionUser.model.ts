@@ -1,18 +1,15 @@
-import { ZodSchema } from "zod";
-import {
-  UserInsertDTO,
-  UserTransactionDTO,
-  UserUpdateDTO,
-} from "../../dtos/users/user.dto.ts";
-import { IEncryptionManager } from "../../managers/encryption.manager.ts";
+import { ZodSchema } from 'zod';
+
+import { UserInsertDTO, UserTransactionDTO, UserUpdateDTO } from '../../dtos/users/user.dto.ts';
+import { IEncryptionManager } from '../../managers/encryption.manager.ts';
 
 export class TransactionUserModel<T extends UserInsertDTO | UserUpdateDTO> {
-  readonly firstName?: string | null;
-  readonly lastName?: string | null;
-  readonly username?: string;
-  readonly email?: string;
-  readonly passwordHash?: string;
-  readonly passwordSalt?: string;
+  public readonly firstName?: string | null;
+  public readonly lastName?: string | null;
+  public readonly username?: string;
+  public readonly email?: string;
+  public readonly passwordHash?: string;
+  public readonly passwordSalt?: string;
 
   private constructor(user: T, passwordHash?: string, passwordSalt?: string) {
     this.firstName = user.firstName || null;
@@ -23,20 +20,19 @@ export class TransactionUserModel<T extends UserInsertDTO | UserUpdateDTO> {
     this.passwordSalt = passwordSalt;
   }
 
-  static async create<U extends UserInsertDTO | UserUpdateDTO>(
+  public static create = async <U extends UserInsertDTO | UserUpdateDTO>(
     user: U,
     encryptionManager: IEncryptionManager,
     schema: ZodSchema,
-  ): Promise<TransactionUserModel<U>> {
+  ): Promise<TransactionUserModel<U>> => {
     schema.parse(user);
     const { hash, salt } = !user.password ? {} : await encryptionManager.hashPassword(user.password);
     return new TransactionUserModel(user, hash, salt);
-  }
+  };
 
-  toPlainObject(): UserTransactionDTO {
+  public toPlainObject = (): UserTransactionDTO => {
     return Object.fromEntries(
-      Object.entries(this)
-        .filter(([_, value]) => typeof value !== 'function' && value !== undefined)
+      Object.entries(this).filter(([_, value]) => typeof value !== 'function' && value !== undefined),
     );
-  }
+  };
 }

@@ -1,3 +1,3 @@
 export interface IUserController {
-  handle(): Promise<void>
+  handle(): Promise<void>;
 }

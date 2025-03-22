@@ -1,25 +1,26 @@
 import { randomBytes, pbkdf2 } from 'crypto';
 import { promisify } from 'util';
-import { IEncryptionConfig } from '../config/encryption.config';
 
-type PasswordHashResult = {
+import { IEncryptionConfig } from '../config/encryption.config.ts';
+
+interface PasswordHashResult {
   hash: string;
   salt: string;
 }
 
 export interface IEncryptionManager {
   hashPassword(password: string): Promise<PasswordHashResult>;
-  comparePassword (password: string, hashedPassword: string, salt: string): Promise<Boolean>;
+  comparePassword(password: string, hashedPassword: string, salt: string): Promise<boolean>;
 }
 
 export class EncryptionManager implements IEncryptionManager {
   private asyncRandomBytes = promisify(randomBytes);
   private asyncPbkdf2 = promisify(pbkdf2);
-  private iterations: number;
-  private digest: string;
-  private encoding: BufferEncoding;
-  private keyLength: number;
-  private saltLength: number;
+  private readonly iterations: number;
+  private readonly digest: string;
+  private readonly encoding: BufferEncoding;
+  private readonly keyLength: number;
+  private readonly saltLength: number;
 
   constructor(encryptionConfig: IEncryptionConfig) {
     this.iterations = encryptionConfig.iterations;
@@ -29,28 +30,16 @@ export class EncryptionManager implements IEncryptionManager {
     this.saltLength = encryptionConfig.saltLength;
   }
 
-  async hashPassword (password: string): Promise<PasswordHashResult> {
+  public hashPassword = async (password: string): Promise<PasswordHashResult> => {
     const bytes = await this.asyncRandomBytes(this.saltLength);
     const salt = bytes.toString(this.encoding);
-    const hashBytes = await this.asyncPbkdf2(
-      password,
-      salt,
-      this.iterations,
-      this.keyLength,
-      this.digest
-    );
+    const hashBytes = await this.asyncPbkdf2(password, salt, this.iterations, this.keyLength, this.digest);
     const hash = hashBytes.toString(this.encoding);
     return { hash, salt };
-  }
+  };
 
-  async comparePassword (password: string, hashedPassword: string, salt: string): Promise<Boolean> {
-    const hashBytes = await this.asyncPbkdf2(
-      password,
-      salt,
-      this.iterations,
-      this.keyLength,
-      this.digest
-    );
+  public comparePassword = async (password: string, hashedPassword: string, salt: string): Promise<boolean> => {
+    const hashBytes = await this.asyncPbkdf2(password, salt, this.iterations, this.keyLength, this.digest);
     const hash = hashBytes.toString(this.encoding);
     return hashedPassword === hash;
   };

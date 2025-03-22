@@ -1,8 +1,8 @@
 export class ErrorModel {
-  readonly statusCode: number;
-  readonly message: string;
-  readonly error: string;
-  readonly details: string[];
+  public readonly statusCode: number;
+  public readonly message: string;
+  public readonly error: string;
+  public readonly details: string[];
 
   constructor(statusCode: number, message: string, error: string, details?: string[]) {
     this.statusCode = statusCode;
@@ -11,7 +11,7 @@ export class ErrorModel {
     this.details = details || [];
   }
 
-  static fromError(error: unknown, statusCode = 500): ErrorModel {
+  public static fromError = (error: unknown, statusCode = 500): ErrorModel => {
     if (error instanceof Error) {
       return new ErrorModel(statusCode, error.message, error.name);
     }
@@ -19,5 +19,5 @@ export class ErrorModel {
       return error;
     }
     return new ErrorModel(statusCode, 'An unknown error occurred', 'UnknownError');
-  }
+  };
 }

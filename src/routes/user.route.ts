@@ -1,72 +1,73 @@
 import { FastifyInstance, FastifyReply, FastifyRequest } from 'fastify';
+
 import { UserBuilder } from '../builders/user.builder.ts';
-import { UserInsertDTO, UserUpdateDTO } from '../dtos/users/user.dto';
+import { UserInsertDTO, UserUpdateDTO } from '../dtos/users/user.dto.ts';
 
 export class UserRoutes {
   private prefix = '/users';
 
-  constructor(private fastify: FastifyInstance) {}
+  constructor(private readonly fastify: FastifyInstance) {}
 
-  private async executeFindUserController(
+  private readonly executeFindUserController = async (
     req: FastifyRequest<{ Params: { id: string } }>,
-    reply: FastifyReply
-  ) {
+    reply: FastifyReply,
+  ) => {
     const controller = UserBuilder.buildFindUsers(req, reply);
     await controller.handle();
-  }
+  };
 
-  private async executeGetAllUsersController(
+  private readonly executeGetAllUsersController = async (
     req: FastifyRequest<{ Querystring: { nameSearch?: string } }>,
-    reply: FastifyReply
-  ) {
+    reply: FastifyReply,
+  ) => {
     const controller = UserBuilder.buildGetAllUsers(req, reply);
     await controller.handle();
-  }
+  };
 
-  private async executeSignInUserController(
-    req: FastifyRequest<{ Body: { email: string, password: string } }>,
-    reply: FastifyReply
-  ) {
+  private readonly executeSignInUserController = async (
+    req: FastifyRequest<{ Body: { email: string; password: string } }>,
+    reply: FastifyReply,
+  ) => {
     const controller = UserBuilder.buildSignInUser(req, reply, this.fastify);
     await controller.handle();
-  }
+  };
 
-  private async executeCreateUserController(
-    req: FastifyRequest<{ Body: { user: UserInsertDTO, returning?: boolean } }>,
-    reply: FastifyReply
-  ) {
+  private readonly executeCreateUserController = async (
+    req: FastifyRequest<{ Body: { user: UserInsertDTO; returning?: boolean } }>,
+    reply: FastifyReply,
+  ) => {
     const controller = UserBuilder.buildCreateUser(req, reply);
     await controller.handle();
-  }
+  };
 
-  private async executeCreateBulkUserController(
+  private readonly executeCreateBulkUserController = async (
     req: FastifyRequest<{ Body: { users: UserInsertDTO[] } }>,
-    reply: FastifyReply
-  ) {
+    reply: FastifyReply,
+  ) => {
     const controller = UserBuilder.buildCreateBulkUser(req, reply);
     await controller.handle();
-  }
+  };
 
-  private async executeUpdateUserController(
+  private readonly executeUpdateUserController = async (
     req: FastifyRequest<{
-      Params: { id: string }
-      Body: { user: UserUpdateDTO, returning?: boolean }
+      Params: { id: string };
+      Body: { user: UserUpdateDTO; returning?: boolean };
     }>,
-    reply: FastifyReply
-  ) {
+    reply: FastifyReply,
+  ) => {
     const controller = UserBuilder.buildUpdateUser(req, reply);
     await controller.handle();
-  }
+  };
 
-  private async executeDeleteUserController(
+  private readonly executeDeleteUserController = async (
     req: FastifyRequest<{ Params: { id: string } }>,
-    reply: FastifyReply
-  ) {
+    reply: FastifyReply,
+  ) => {
     const controller = UserBuilder.buildDeleteUser(req, reply);
     await controller.handle();
-  }
+  };
 
-  registerRoutes() {
+  public registerRoutes = () => {
     this.fastify.get(`${this.prefix}`, this.executeGetAllUsersController);
     this.fastify.post(`${this.prefix}`, this.executeCreateUserController);
 
@@ -76,5 +77,5 @@ export class UserRoutes {
 
     this.fastify.post(`${this.prefix}/signin`, this.executeSignInUserController);
     this.fastify.post(`${this.prefix}/bulk`, this.executeCreateBulkUserController);
-  }
+  };
 }
