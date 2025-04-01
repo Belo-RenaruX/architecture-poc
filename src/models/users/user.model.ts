@@ -1,6 +1,6 @@
 import dayjs from 'dayjs';
 
-import { UserDTO, UserDTOSchema } from '../../dtos/users/user.dto.ts';
+import { UserTableDTO } from '../../dtos/users/user.dto.ts';
 
 export class UserModel {
   public readonly id: number;
@@ -11,10 +11,8 @@ export class UserModel {
   public readonly createdAt?: string;
   public readonly updatedAt?: string;
 
-  constructor(user: UserDTO) {
-    UserDTOSchema.parse(user);
-
-    this.id = user.id;
+  constructor(user: Partial<UserTableDTO>) {
+    this.id = user.id ?? 0;
     this.firstName = this.formatNullableString(user.firstName);
     this.lastName = this.formatNullableString(user.lastName);
     this.username = user.username;

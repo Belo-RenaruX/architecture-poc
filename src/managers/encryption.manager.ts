@@ -1,7 +1,7 @@
 import { randomBytes, pbkdf2 } from 'crypto';
 import { promisify } from 'util';
 
-import { IEncryptionConfig } from '../config/encryption.config.ts';
+import { IEncryptionConfig } from './config/encryption.config.ts';
 
 interface PasswordHashResult {
   hash: string;

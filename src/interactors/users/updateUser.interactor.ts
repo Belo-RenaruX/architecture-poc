@@ -1,6 +1,11 @@
-import { ZodSchema } from 'zod';
+import { FastifyRequest } from 'fastify';
 
-import { UserUpdateDTO } from '../../dtos/users/user.dto.ts';
+import {
+  UpdateUserInputDTO,
+  UpdateUserBodyDTOSchema,
+  UpdateUserParamDTOSchema,
+} from 'src/dtos/users/user.request.dto.ts';
+
 import { IEncryptionManager } from '../../managers/encryption.manager.ts';
 import { ErrorModel } from '../../models/errors/error.model.ts';
 import { TransactionUserModel } from '../../models/users/transactionUser.model.ts';
@@ -9,24 +14,23 @@ import { IUserRepository } from '../../repositories/users/user.repository.interf
 
 import { IUserInteractor } from './user.interactor.interface.ts';
 
-export class UpdateUserInteractor implements IUserInteractor {
+export class UpdateUserInteractor implements IUserInteractor<UpdateUserInputDTO, UserModel | void> {
   constructor(
     private readonly repository: IUserRepository,
     private readonly encryptionManager: IEncryptionManager,
-    private readonly schema: ZodSchema,
-    private readonly id: number,
-    private readonly user: UserUpdateDTO,
-    private readonly returning: boolean,
   ) {}
 
-  public execute = async (): Promise<UserModel | ErrorModel | void> => {
+  public execute = async (input: FastifyRequest<UpdateUserInputDTO>) => {
     try {
-      const model = await TransactionUserModel.create(this.user, this.encryptionManager, this.schema);
-      await this.repository.updateUser(this.id, model);
+      const { body, params } = input;
+      const { returning, ...user } = UpdateUserBodyDTOSchema.parse(body);
+      const { id } = UpdateUserParamDTOSchema.parse(params);
+      const model = await TransactionUserModel.create(user, this.encryptionManager);
+      await this.repository.updateUser(id, model);
 
-      if (this.returning) {
-        const insertedUser = await this.repository.findUserById(this.id);
-        if (!insertedUser) throw new ErrorModel(404, `User with id ${this.id} doesn't exists.`, 'Not Found');
+      if (returning) {
+        const insertedUser = await this.repository.findUserById(id);
+        if (!insertedUser) throw new ErrorModel(404, `User with id: ${id} doesn't exists.`, 'Not Found');
 
         const insertedModel = new UserModel(insertedUser);
 

@@ -1,9 +1,7 @@
-import { ZodSchema } from 'zod';
-
 import { UserInsertDTO, UserTransactionDTO, UserUpdateDTO } from '../../dtos/users/user.dto.ts';
 import { IEncryptionManager } from '../../managers/encryption.manager.ts';
 
-export class TransactionUserModel<T extends UserInsertDTO | UserUpdateDTO> {
+export class TransactionUserModel {
   public readonly firstName?: string | null;
   public readonly lastName?: string | null;
   public readonly username?: string;
@@ -11,7 +9,7 @@ export class TransactionUserModel<T extends UserInsertDTO | UserUpdateDTO> {
   public readonly passwordHash?: string;
   public readonly passwordSalt?: string;
 
-  private constructor(user: T, passwordHash?: string, passwordSalt?: string) {
+  private constructor(user: UserInsertDTO | UserUpdateDTO, passwordHash?: string, passwordSalt?: string) {
     this.firstName = user.firstName || null;
     this.lastName = user.lastName || null;
     this.username = user.username;
@@ -20,12 +18,10 @@ export class TransactionUserModel<T extends UserInsertDTO | UserUpdateDTO> {
     this.passwordSalt = passwordSalt;
   }
 
-  public static create = async <U extends UserInsertDTO | UserUpdateDTO>(
-    user: U,
+  public static create = async (
+    user: UserInsertDTO | UserUpdateDTO,
     encryptionManager: IEncryptionManager,
-    schema: ZodSchema,
-  ): Promise<TransactionUserModel<U>> => {
-    schema.parse(user);
+  ): Promise<TransactionUserModel> => {
     const { hash, salt } = !user.password ? {} : await encryptionManager.hashPassword(user.password);
     return new TransactionUserModel(user, hash, salt);
   };

@@ -1,15 +1,19 @@
+import { HttpStatusHelper } from 'src/helpers/status.helper.ts';
+
 import { ErrorModel } from '../errors/error.model.ts';
 
-interface ErrorResponse {
+export interface ErrorResponse {
+  success: boolean;
   statusCode: number;
-  message: string;
+  statusMessage: string;
   error: string;
-  details: string[];
+  detail: string;
 }
 
-interface SuccessResponse<T> {
+export interface SuccessResponse<T> {
+  success: boolean;
   statusCode: number;
-  message: string;
+  statusMessage: string;
   data?: T;
 }
 
@@ -18,37 +22,40 @@ export class ResponseModel<T> {
   public readonly statusCode: number;
 
   constructor(private readonly data?: T | ErrorModel) {
-    if (this.data instanceof ErrorModel) {
-      this.statusCode = this.data.statusCode;
-      this.body = {
-        statusCode: this.data.statusCode,
-        message: this.data.message,
-        error: this.data.error,
-        details: this.data.details,
-      };
-      return;
-    }
-    if (!this.data) {
-      this.statusCode = 204;
-      this.body = {
-        statusCode: 204,
-        message: 'No Content',
-      };
-    } else {
-      this.statusCode = 200;
-      this.body = {
-        statusCode: 200,
-        message: 'Success',
-        data: this.data as T,
-      };
+    switch (true) {
+      case this.data instanceof ErrorModel:
+        this.statusCode = this.data.statusCode;
+        this.body = {
+          success: false,
+          statusCode: this.data.statusCode,
+          statusMessage: HttpStatusHelper.getMessage(this.data.statusCode),
+          error: this.data.error,
+          detail: this.data.detail,
+        };
+        break;
+      case !!this.data:
+        this.statusCode = 200;
+        this.body = {
+          success: true,
+          statusCode: 200,
+          statusMessage: HttpStatusHelper.getMessage(200),
+          data: this.data as T,
+        };
+        break;
+      default:
+        this.statusCode = 204;
+        this.body = {
+          success: true,
+          statusCode: 204,
+          statusMessage: HttpStatusHelper.getMessage(204),
+        };
+        break;
     }
   }
 
   public toPlainObject = (): ErrorResponse | SuccessResponse<T> => {
-    return this.data instanceof ErrorModel
-      ? this.body
-      : (Object.fromEntries(
-          Object.entries(this.body).filter(([_, value]) => value !== undefined),
-        ) as SuccessResponse<T>);
+    return Object.fromEntries(Object.entries(this.body).filter(([_, value]) => value !== undefined)) as
+      | ErrorResponse
+      | SuccessResponse<T>;
   };
 }

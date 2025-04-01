@@ -1,7 +1,7 @@
-import { ErrorModel } from '../../models/errors/error.model.ts';
-import { UserModel } from '../../models/users/user.model.ts';
-import { UserSignInModel } from '../../models/users/userSignin.model.ts';
+import { FastifyRequest, RouteGenericInterface } from 'fastify';
 
-export interface IUserInteractor {
-  execute(): Promise<UserModel | UserModel[] | UserSignInModel | ErrorModel | void>;
+import { ErrorModel } from '../../models/errors/error.model.ts';
+
+export interface IUserInteractor<Input extends RouteGenericInterface, Output> {
+  execute(input: FastifyRequest<Input>): Promise<Output | ErrorModel>;
 }

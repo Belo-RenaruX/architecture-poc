@@ -1,81 +1,44 @@
-import { FastifyInstance, FastifyReply, FastifyRequest } from 'fastify';
+import { FastifyInstance } from 'fastify';
+
+import { CreateBulkUserController } from 'src/controllers/users/createBulkUser.controller.ts';
+import { CreateUserController } from 'src/controllers/users/createUser.controller.ts';
+import { DeleteUserController } from 'src/controllers/users/deleteUser.controller.ts';
+import { FindUserController } from 'src/controllers/users/findUser.controller.ts';
+import { GetAllUsersController } from 'src/controllers/users/getAllUsers.controller.ts';
+import { SignInUserController } from 'src/controllers/users/signInUser.controller.ts';
+import { UpdateUserController } from 'src/controllers/users/updateUser.controller.ts';
 
 import { UserBuilder } from '../builders/user.builder.ts';
-import { UserInsertDTO, UserUpdateDTO } from '../dtos/users/user.dto.ts';
 
 export class UserRoutes {
-  private prefix = '/users';
+  private prefix: string = '/users';
+  private readonly findUserController: FindUserController;
+  private readonly getAllUsersController: GetAllUsersController;
+  private readonly signInUserController: SignInUserController;
+  private readonly createUserController: CreateUserController;
+  private readonly createBulkUserController: CreateBulkUserController;
+  private readonly updateUserController: UpdateUserController;
+  private readonly deleteUserController: DeleteUserController;
 
-  constructor(private readonly fastify: FastifyInstance) {}
-
-  private readonly executeFindUserController = async (
-    req: FastifyRequest<{ Params: { id: string } }>,
-    reply: FastifyReply,
-  ) => {
-    const controller = UserBuilder.buildFindUsers(req, reply);
-    await controller.handle();
-  };
-
-  private readonly executeGetAllUsersController = async (
-    req: FastifyRequest<{ Querystring: { nameSearch?: string } }>,
-    reply: FastifyReply,
-  ) => {
-    const controller = UserBuilder.buildGetAllUsers(req, reply);
-    await controller.handle();
-  };
-
-  private readonly executeSignInUserController = async (
-    req: FastifyRequest<{ Body: { email: string; password: string } }>,
-    reply: FastifyReply,
-  ) => {
-    const controller = UserBuilder.buildSignInUser(req, reply, this.fastify);
-    await controller.handle();
-  };
-
-  private readonly executeCreateUserController = async (
-    req: FastifyRequest<{ Body: { user: UserInsertDTO; returning?: boolean } }>,
-    reply: FastifyReply,
-  ) => {
-    const controller = UserBuilder.buildCreateUser(req, reply);
-    await controller.handle();
-  };
-
-  private readonly executeCreateBulkUserController = async (
-    req: FastifyRequest<{ Body: { users: UserInsertDTO[] } }>,
-    reply: FastifyReply,
-  ) => {
-    const controller = UserBuilder.buildCreateBulkUser(req, reply);
-    await controller.handle();
-  };
-
-  private readonly executeUpdateUserController = async (
-    req: FastifyRequest<{
-      Params: { id: string };
-      Body: { user: UserUpdateDTO; returning?: boolean };
-    }>,
-    reply: FastifyReply,
-  ) => {
-    const controller = UserBuilder.buildUpdateUser(req, reply);
-    await controller.handle();
-  };
-
-  private readonly executeDeleteUserController = async (
-    req: FastifyRequest<{ Params: { id: string } }>,
-    reply: FastifyReply,
-  ) => {
-    const controller = UserBuilder.buildDeleteUser(req, reply);
-    await controller.handle();
-  };
+  constructor(private readonly fastify: FastifyInstance) {
+    this.findUserController = UserBuilder.buildFindUsersController();
+    this.getAllUsersController = UserBuilder.buildGetAllUsersController();
+    this.signInUserController = UserBuilder.buildSignInUserController(fastify);
+    this.createUserController = UserBuilder.buildCreateUserController();
+    this.createBulkUserController = UserBuilder.buildCreateBulkUserController();
+    this.updateUserController = UserBuilder.buildUpdateUserController();
+    this.deleteUserController = UserBuilder.buildDeleteUserController();
+  }
 
   public registerRoutes = () => {
-    this.fastify.get(`${this.prefix}`, this.executeGetAllUsersController);
-    this.fastify.post(`${this.prefix}`, this.executeCreateUserController);
+    this.fastify.get(`${this.prefix}`, this.getAllUsersController.handle);
+    this.fastify.post(`${this.prefix}`, this.createUserController.handle);
 
-    this.fastify.get(`${this.prefix}/:id`, this.executeFindUserController);
-    this.fastify.patch(`${this.prefix}/:id`, this.executeUpdateUserController);
-    this.fastify.delete(`${this.prefix}/:id`, this.executeDeleteUserController);
+    this.fastify.get(`${this.prefix}/:id`, this.findUserController.handle);
+    this.fastify.patch(`${this.prefix}/:id`, this.updateUserController.handle);
+    this.fastify.delete(`${this.prefix}/:id`, this.deleteUserController.handle);
 
-    this.fastify.post(`${this.prefix}/signin`, this.executeSignInUserController);
-    this.fastify.post(`${this.prefix}/bulk`, this.executeCreateBulkUserController);
+    this.fastify.post(`${this.prefix}/signin`, this.signInUserController.handle);
+    this.fastify.post(`${this.prefix}/bulk`, this.createBulkUserController.handle);
   };
 }

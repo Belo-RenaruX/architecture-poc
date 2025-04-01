@@ -1,4 +1,7 @@
-import { UserSessionDTO } from '../../dtos/users/user.dto.ts';
+import { FastifyRequest } from 'fastify';
+
+import { SignInUserInputDTO, SignInUserBodyDTOSchema } from 'src/dtos/users/user.request.dto.ts';
+
 import { IEncryptionManager } from '../../managers/encryption.manager.ts';
 import { IJWTManager } from '../../managers/jwt.manager.ts';
 import { ErrorModel } from '../../models/errors/error.model.ts';
@@ -8,21 +11,21 @@ import { IUserRepository } from '../../repositories/users/user.repository.interf
 
 import { IUserInteractor } from './user.interactor.interface.ts';
 
-export class SignInUserInteractor implements IUserInteractor {
+export class SignInUserInteractor implements IUserInteractor<SignInUserInputDTO, UserSignInModel> {
   constructor(
     private readonly repository: IUserRepository,
     private readonly encryptionManager: IEncryptionManager,
-    private readonly jwtManager: IJWTManager<UserSessionDTO>,
-    private readonly email: string,
-    private readonly password: string,
+    private readonly jwtManager: IJWTManager<UserModel>,
   ) {}
 
-  public execute = async (): Promise<UserSignInModel | ErrorModel> => {
+  public execute = async (input: FastifyRequest<SignInUserInputDTO>) => {
+    const { body } = input;
     try {
-      const user = await this.repository.signInUser(this.email);
+      const { email, password } = SignInUserBodyDTOSchema.parse({ body });
+      const user = await this.repository.signInUser(email);
       if (!user) throw new ErrorModel(400, `Invalid credentials`, 'Bad Request');
       const isValidPassword = await this.encryptionManager.comparePassword(
-        this.password,
+        password,
         user.passwordHash,
         user.passwordSalt,
       );

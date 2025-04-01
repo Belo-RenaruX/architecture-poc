@@ -1,6 +1,7 @@
-import { ZodSchema } from 'zod';
+import { FastifyRequest } from 'fastify';
 
-import { UserInsertDTO } from '../../dtos/users/user.dto.ts';
+import { CreateUserBodyDTOSchema, CreateUserInputDTO } from 'src/dtos/users/user.request.dto.ts';
+
 import { IEncryptionManager } from '../../managers/encryption.manager.ts';
 import { ErrorModel } from '../../models/errors/error.model.ts';
 import { TransactionUserModel } from '../../models/users/transactionUser.model.ts';
@@ -9,21 +10,20 @@ import { IUserRepository } from '../../repositories/users/user.repository.interf
 
 import { IUserInteractor } from './user.interactor.interface.ts';
 
-export class CreateUserInteractor implements IUserInteractor {
+export class CreateUserInteractor implements IUserInteractor<CreateUserInputDTO, UserModel | void> {
   constructor(
     private readonly repository: IUserRepository,
     private readonly encryptionManager: IEncryptionManager,
-    private readonly schema: ZodSchema,
-    private readonly user: UserInsertDTO,
-    private readonly returning: boolean,
   ) {}
 
-  public execute = async (): Promise<UserModel | ErrorModel | void> => {
+  public execute = async (input: FastifyRequest<CreateUserInputDTO>) => {
+    const { body } = input;
     try {
-      const model = await TransactionUserModel.create(this.user, this.encryptionManager, this.schema);
+      const { returning, ...user } = CreateUserBodyDTOSchema.parse(body);
+      const model = await TransactionUserModel.create(user, this.encryptionManager);
       const { insertId } = await this.repository.insertUser(model);
 
-      if (insertId && this.returning) {
+      if (insertId && returning) {
         const insertedUser = await this.repository.findUserById(Number(insertId));
         if (!insertedUser) throw new ErrorModel(404, `User with id ${insertId} doesn't exists.`, 'Not Found');
 
