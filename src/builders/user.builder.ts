@@ -1,5 +1,3 @@
-import { FastifyInstance } from 'fastify';
-
 import {
   UserListDTO,
   UserListDTOSchema,
@@ -12,6 +10,7 @@ import { ResponseInteractor } from 'src/interactors/response/response.interactor
 import { EmptyResponseStrategy } from 'src/interactors/response/strategies/empty.strategy.ts';
 import { HybridResponseStrategy } from 'src/interactors/response/strategies/hybrid.strategy.ts';
 import { SuccessResponseStrategy } from 'src/interactors/response/strategies/success.strategy.ts';
+import { JWTConfigSession } from 'src/managers/config/jwt.config.ts';
 import { UserModel } from 'src/models/users/user.model.ts';
 import { UserSignInModel } from 'src/models/users/userSignin.model.ts';
 
@@ -56,12 +55,13 @@ export class UserBuilder {
     return new GetAllUsersController(interactor, responseInteractor);
   };
 
-  public static buildSignInUserController = (instance: FastifyInstance): SignInUserController => {
+  public static buildSignInUserController = (): SignInUserController => {
     const db = DatabaseClient.getInstance();
     const repository = new UserRepository(db);
     const encryptionConfig = new EncryptionConfigSha512();
     const encryptionManager = new EncryptionManager(encryptionConfig);
-    const jwtManager = new JWTManager<UserModel>(instance);
+    const jwtConfig = new JWTConfigSession();
+    const jwtManager = new JWTManager<UserResultDTO>(jwtConfig);
     const interactor = new SignInUserInteractor(repository, encryptionManager, jwtManager);
     const responseStrategy = new SuccessResponseStrategy<UserSignInDTO>(UserSignInDTOSchema);
     const responseInteractor = new ResponseInteractor<UserSignInModel>(responseStrategy);

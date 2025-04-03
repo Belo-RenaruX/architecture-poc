@@ -1,5 +1,6 @@
 import { FastifyRequest } from 'fastify';
 
+import { UserResultDTO } from 'src/dtos/users/user.dto.ts';
 import { SignInUserInputDTO, SignInUserBodyDTOSchema } from 'src/dtos/users/user.request.dto.ts';
 
 import { IEncryptionManager } from '../../managers/encryption.manager.ts';
@@ -15,7 +16,7 @@ export class SignInUserInteractor implements IUserInteractor<SignInUserInputDTO,
   constructor(
     private readonly repository: IUserRepository,
     private readonly encryptionManager: IEncryptionManager,
-    private readonly jwtManager: IJWTManager<UserModel>,
+    private readonly jwtManager: IJWTManager<UserResultDTO>,
   ) {}
 
   public execute = async (input: FastifyRequest<SignInUserInputDTO>) => {
@@ -31,7 +32,8 @@ export class SignInUserInteractor implements IUserInteractor<SignInUserInputDTO,
       );
       if (!isValidPassword) throw new ErrorModel(400, `Invalid credentials`, 'Bad Request');
       const model = new UserModel(user);
-      const signInModel = new UserSignInModel(model, this.jwtManager);
+      const { jwt } = await this.jwtManager.generateToken(model.toResultDTO());
+      const signInModel = new UserSignInModel(model, jwt);
       return signInModel;
     } catch (error) {
       return ErrorModel.fromError(error);

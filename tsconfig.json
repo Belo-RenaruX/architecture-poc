@@ -9,7 +9,7 @@
     "noEmit":true,
     "moduleResolution": "Node",
     "outDir": "./dist",
-    "rootDir": "./src",
+    "rootDir": "./",
     "strict": true,
     "lib": [ "esnext" ],
     "types": [ "node" ],

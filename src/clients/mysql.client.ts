@@ -14,11 +14,11 @@ export class DatabaseClient {
     if (!this.instance) {
       const dialect = new MysqlDialect({
         pool: createPool({
-          host: 'bohemia-padel-db-dev.c9wi4eqgchj1.us-east-1.rds.amazonaws.com',
-          user: 'devuser',
-          password: 'edYhouwPYWI6Xb7bju1dz01t',
-          database: 'architecture_test',
-          port: 3306,
+          host: process.env.DB_HOST,
+          user: process.env.DB_USER,
+          password: process.env.DB_PASSWORD,
+          database: process.env.DB_NAME,
+          port: Number(process.env.DB_PORT),
           connectionLimit: 10,
         }),
       });

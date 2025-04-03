@@ -1,0 +1,39 @@
+version: '3.9'
+
+services:
+  app:
+    container_name: architecture-poc-app
+    build:
+      context: .
+    command: yarn dev
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+    ports:
+      - '3000:3000'
+    depends_on:
+      - db
+    environment:
+      NODE_ENV: development
+      DB_HOST: db
+      DB_PORT: 3306
+      DB_USER: devuser
+      DB_PASSWORD: devpassword
+      DB_NAME: architecture_test
+
+  db:
+    container_name: architecture-poc-db
+    image: mysql:8.0
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: architecture_test
+      MYSQL_USER: devuser
+      MYSQL_PASSWORD: devpassword
+    ports:
+      - '3306:3306'
+    volumes:
+      - db-data:/var/lib/mysql
+
+volumes:
+  db-data:

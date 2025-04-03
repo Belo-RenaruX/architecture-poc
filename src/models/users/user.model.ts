@@ -1,6 +1,6 @@
 import dayjs from 'dayjs';
 
-import { UserTableDTO } from '../../dtos/users/user.dto.ts';
+import { UserResultDTO, UserTableDTO } from '../../dtos/users/user.dto.ts';
 
 export class UserModel {
   public readonly id: number;
@@ -27,5 +27,15 @@ export class UserModel {
 
   private readonly formatDateTime = (datetime?: string): string | undefined => {
     return !datetime ? datetime : dayjs(datetime).format('DD-MM-YYYY HH:mm:ss');
+  };
+
+  public toResultDTO = (): UserResultDTO => {
+    return {
+      id: this.id,
+      firstName: this.firstName ?? '',
+      lastName: this.lastName ?? '',
+      username: this.username ?? '',
+      email: this.email ?? '',
+    };
   };
 }

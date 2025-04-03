@@ -2,7 +2,6 @@ import { fileURLToPath } from 'url';
 
 import { OpenAPIRegistry, OpenApiGeneratorV3 } from '@asteasolutions/zod-to-openapi';
 import cors from '@fastify/cors';
-import fastifyJwt from '@fastify/jwt';
 import ejs from 'ejs';
 import Fastify from 'fastify';
 
@@ -13,7 +12,6 @@ import { UserRoutes } from './routes/user.route.ts';
 export const app = Fastify({ logger: true });
 
 app.register(cors);
-app.register(fastifyJwt, { secret: 'testSecret' });
 
 const registry = new OpenAPIRegistry();
 const manager = new OpenApiManager(registry);

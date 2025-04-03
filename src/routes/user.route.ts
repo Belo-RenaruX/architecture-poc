@@ -23,7 +23,7 @@ export class UserRoutes {
   constructor(private readonly fastify: FastifyInstance) {
     this.findUserController = UserBuilder.buildFindUsersController();
     this.getAllUsersController = UserBuilder.buildGetAllUsersController();
-    this.signInUserController = UserBuilder.buildSignInUserController(fastify);
+    this.signInUserController = UserBuilder.buildSignInUserController();
     this.createUserController = UserBuilder.buildCreateUserController();
     this.createBulkUserController = UserBuilder.buildCreateBulkUserController();
     this.updateUserController = UserBuilder.buildUpdateUserController();
